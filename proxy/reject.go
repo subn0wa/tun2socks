@@ -6,8 +6,8 @@ import (
 	"net"
 	"time"
 
-	M "github.com/xjasonlyu/tun2socks/v2/metadata"
-	"github.com/xjasonlyu/tun2socks/v2/proxy/proto"
+	M "github.com/subn0wa/tun2socks/metadata"
+	"github.com/subn0wa/tun2socks/proxy/proto"
 )
 
 var _ Proxy = (*Reject)(nil)

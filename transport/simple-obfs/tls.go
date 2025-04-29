@@ -7,8 +7,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/xjasonlyu/tun2socks/v2/buffer"
-	"github.com/xjasonlyu/tun2socks/v2/transport/internal/bufferpool"
+	"github.com/subn0wa/tun2socks/buffer"
+	"github.com/subn0wa/tun2socks/transport/internal/bufferpool"
 )
 
 const (

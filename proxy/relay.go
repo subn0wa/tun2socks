@@ -13,10 +13,10 @@ import (
 
 	"github.com/go-gost/relay"
 
-	"github.com/xjasonlyu/tun2socks/v2/buffer"
-	"github.com/xjasonlyu/tun2socks/v2/dialer"
-	M "github.com/xjasonlyu/tun2socks/v2/metadata"
-	"github.com/xjasonlyu/tun2socks/v2/proxy/proto"
+	"github.com/subn0wa/tun2socks/buffer"
+	"github.com/subn0wa/tun2socks/dialer"
+	M "github.com/subn0wa/tun2socks/metadata"
+	"github.com/subn0wa/tun2socks/proxy/proto"
 )
 
 var _ Proxy = (*Relay)(nil)

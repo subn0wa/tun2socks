@@ -5,29 +5,29 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 
-	"go.uber.org/automaxprocs/maxprocs"
-	"gopkg.in/yaml.v3"
+	"golang.org/x/sys/windows"
 
-	_ "github.com/xjasonlyu/tun2socks/v2/dns"
-	"github.com/xjasonlyu/tun2socks/v2/engine"
-	"github.com/xjasonlyu/tun2socks/v2/internal/version"
-	"github.com/xjasonlyu/tun2socks/v2/log"
+	"go.uber.org/automaxprocs/maxprocs"
+
+	_ "github.com/subn0wa/tun2socks/dns"
+	"github.com/subn0wa/tun2socks/engine"
+	"github.com/subn0wa/tun2socks/internal/version"
 )
 
 var (
-	key = new(engine.Key)
-
-	configFile  string
+	key         = new(engine.Key)
 	versionFlag bool
+	mutexName   string
 )
 
 func init() {
 	flag.IntVar(&key.Mark, "fwmark", 0, "Set firewall MARK (Linux only)")
 	flag.IntVar(&key.MTU, "mtu", 0, "Set device maximum transmission unit (MTU)")
 	flag.DurationVar(&key.UDPTimeout, "udp-timeout", 0, "Set timeout for each UDP session")
-	flag.StringVar(&configFile, "config", "", "YAML format configuration file")
+	flag.StringVar(&mutexName, "mutex", "", "Windows mutex name for process lifetime control")
 	flag.StringVar(&key.Device, "device", "", "Use this device [driver://]name")
 	flag.StringVar(&key.Interface, "interface", "", "Use network INTERFACE (Linux/MacOS only)")
 	flag.StringVar(&key.LogLevel, "loglevel", "info", "Log level [debug|info|warn|error|silent]")
@@ -52,22 +52,20 @@ func main() {
 		os.Exit(0)
 	}
 
-	if configFile != "" {
-		data, err := os.ReadFile(configFile)
-		if err != nil {
-			log.Fatalf("Failed to read config file '%s': %v", configFile, err)
-		}
-		if err = yaml.Unmarshal(data, key); err != nil {
-			log.Fatalf("Failed to unmarshal config file '%s': %v", configFile, err)
-		}
-	}
-
 	engine.Insert(key)
 
 	engine.Start()
 	defer engine.Stop()
 
-	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	<-sigCh
+	if mutexName != "" && runtime.GOOS == "windows" {
+		handle, err := windows.OpenMutex(windows.SYNCHRONIZE, false, windows.StringToUTF16Ptr(mutexName))
+		if err == nil {
+			defer windows.CloseHandle(handle)
+			windows.WaitForSingleObject(handle, windows.INFINITE)
+		}
+	} else {
+		sigCh := make(chan os.Signal, 1)
+		signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+		<-sigCh
+	}
 }

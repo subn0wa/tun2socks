@@ -6,11 +6,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/xjasonlyu/tun2socks/v2/buffer"
-	"github.com/xjasonlyu/tun2socks/v2/core/adapter"
-	"github.com/xjasonlyu/tun2socks/v2/log"
-	M "github.com/xjasonlyu/tun2socks/v2/metadata"
-	"github.com/xjasonlyu/tun2socks/v2/tunnel/statistic"
+	"github.com/subn0wa/tun2socks/buffer"
+	"github.com/subn0wa/tun2socks/core/adapter"
+	"github.com/subn0wa/tun2socks/log"
+	M "github.com/subn0wa/tun2socks/metadata"
+	"github.com/subn0wa/tun2socks/tunnel/statistic"
 )
 
 // TODO: Port Restricted NAT support.

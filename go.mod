@@ -1,4 +1,4 @@
-module github.com/xjasonlyu/tun2socks/v2
+module github.com/subn0wa/tun2socks
 
 go 1.23.1
 
